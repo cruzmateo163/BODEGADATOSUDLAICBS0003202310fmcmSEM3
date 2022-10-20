@@ -1,0 +1,3 @@
+CREATE DATABASE fmcmdbsor;
+ 
+CREATE DATABASE fmcmdbstg;
