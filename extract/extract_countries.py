@@ -41,9 +41,9 @@ def ext_countries():
                 countries_dict["country_region"].append(countryregion)
                 countries_dict["country_region_id"].append(countryregionid)
         if countries_dict["country_id"]:
-            ses_db_stg.connect().execute("TRUNCATE TABLE countries")
+            ses_db_stg.connect().execute("TRUNCATE TABLE countries_ext")
             df_countries_ext=pd.DataFrame(countries_dict)
-            df_countries_ext.to_sql('countries', ses_db_stg, if_exists='append', index=False)
+            df_countries_ext.to_sql('countries_ext', ses_db_stg, if_exists='append', index=False)
 
 
     except:

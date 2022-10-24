@@ -47,9 +47,9 @@ def ext_sales():
                 sales_dict["quantity_sold"].append(quantityid)
                 sales_dict["amount_sold"].append(amountid)
         if sales_dict["prod_id"]:
-            ses_db_stg.connect().execute("TRUNCATE TABLE sales")
+            ses_db_stg.connect().execute("TRUNCATE TABLE sales_ext")
             df_sales_ext=pd.DataFrame(sales_dict)
-            df_sales_ext.to_sql('sales', ses_db_stg, if_exists='append', index=False)
+            df_sales_ext.to_sql('sales_ext', ses_db_stg, if_exists='append', index=False)
 
 
     except:

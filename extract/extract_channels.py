@@ -41,9 +41,9 @@ def ext_channels():
                 channel_dict["channel_class"].append(cla)
                 channel_dict["channel_class_id"].append(cla_id)
         if channel_dict["channel_id"]:
-            ses_db_stg.connect().execute("TRUNCATE TABLE channels")
+            ses_db_stg.connect().execute("TRUNCATE TABLE channels_ext")
             df_channels_ext=pd.DataFrame(channel_dict)
-            df_channels_ext.to_sql('channels', ses_db_stg, if_exists='append', index=False)
+            df_channels_ext.to_sql('channels_ext', ses_db_stg, if_exists='append', index=False)
 
 
     except:

@@ -56,9 +56,9 @@ def ext_times():
                 times_dict["calendar_quarter_desc"].append( calendarquarter_desc)
                 times_dict["calendar_year"].append(calendaryear)
         if times_dict["time_id"]:
-            ses_db_stg.connect().execute("TRUNCATE TABLE times")
+            ses_db_stg.connect().execute("TRUNCATE TABLE times_ext")
             df_times_ext=pd.DataFrame(times_dict)
-            df_times_ext.to_sql('times', ses_db_stg, if_exists='append', index=False)
+            df_times_ext.to_sql('times_ext', ses_db_stg, if_exists='append', index=False)
 
 
     except:
