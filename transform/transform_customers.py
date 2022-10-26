@@ -2,9 +2,10 @@ from pickle import FALSE
 from util.db_connection import Db_Connection
 import pandas as pd
 import traceback
+from datetime import datetime
 
 
-def ext_customers():
+def tra_customers(etlpro_id):
     try:
         #Variables
         type = 'mysql'
@@ -21,7 +22,7 @@ def ext_customers():
         elif ses_db_stg == -2:
             raise Exception("Error trying to connect to the b2b_dwh_staging database")
       
-         #DICTIONARY FOR VALUES OF customers
+         #DICTIONARY FOR VALUES OF Customers_TRA
         customers_dict = {
             "cust_id":[],
             "cust_first_name":[],
@@ -37,22 +38,23 @@ def ext_customers():
             "cust_main_phone_number":[],
             "cust_income_level":[],
             "cust_credit_limit":[],
-            "cust_email":[]
+            "cust_email":[],
+            "etlpro_id":[]
         }
-        #Reading the CVS file
-        customers_csv=pd.read_csv("csvs/customers.csv")
-        print(customers_csv)
-        #Processing the CVS file content
-        if not customers_csv.empty:
+        #Reading the ext table 
+        customers_ext=pd.read_sql("SELECT CUST_ID,CUST_FIRST_NAME,CUST_LAST_NAME,CUST_GENDER,CUST_YEAR_OF_BIRTH, CUST_MARITAL_STATUS, CUST_STREET_ADDRESS, CUST_POSTAL_CODE, CUST_CITY, CUST_STATE_PROVINCE,COUNTRY_ID, CUST_MAIN_PHONE_NUMBER, CUST_INCOME_LEVEL,CUST_CREDIT_LIMIT, CUST_EMAIL FROM customers_ext", ses_db_stg)
+        
+        #Processing the rows
+        if not customers_ext.empty:
             for custid, custfirst_name, custlast_name, custgender, custyear_birth, custmarital, cust_address, cust_postalcode, custcity, cust_province, countryid, cust_phone, cust_income, cust_credit, custemail \
-                in zip(customers_csv['CUST_ID'], customers_csv['CUST_FIRST_NAME'], customers_csv['CUST_LAST_NAME'], customers_csv['CUST_GENDER'],
-                customers_csv['CUST_YEAR_OF_BIRTH'], customers_csv['CUST_MARITAL_STATUS'],customers_csv['CUST_STREET_ADDRESS'],customers_csv['CUST_POSTAL_CODE'],
-                customers_csv['CUST_CITY'],customers_csv['CUST_STATE_PROVINCE'],customers_csv['COUNTRY_ID'],customers_csv['CUST_MAIN_PHONE_NUMBER'],customers_csv['CUST_INCOME_LEVEL'],
-                customers_csv['CUST_CREDIT_LIMIT'],customers_csv['CUST_EMAIL']):
+                in zip(customers_ext['CUST_ID'], customers_ext['CUST_FIRST_NAME'], customers_ext['CUST_LAST_NAME'], customers_ext['CUST_GENDER'],
+                customers_ext['CUST_YEAR_OF_BIRTH'], customers_ext['CUST_MARITAL_STATUS'],customers_ext['CUST_STREET_ADDRESS'],customers_ext['CUST_POSTAL_CODE'],
+                customers_ext['CUST_CITY'],customers_ext['CUST_STATE_PROVINCE'],customers_ext['COUNTRY_ID'],customers_ext['CUST_MAIN_PHONE_NUMBER'],customers_ext['CUST_INCOME_LEVEL'],
+                customers_ext['CUST_CREDIT_LIMIT'],customers_ext['CUST_EMAIL']):
                 customers_dict['cust_id'].append(custid)
-                customers_dict["cust_first_name"].append( custfirst_name)
+                customers_dict["cust_first_name"].append(custfirst_name)
                 customers_dict["cust_last_name"].append(custlast_name)
-                customers_dict["cust_gender"].append( custgender)
+                customers_dict["cust_gender"].append(custgender)
                 customers_dict["cust_year_of_birth"].append(custyear_birth)
                 customers_dict["cust_marital_status"].append( custmarital)
                 customers_dict["cust_street_address"].append(cust_address)
@@ -64,12 +66,14 @@ def ext_customers():
                 customers_dict["cust_income_level"].append(cust_income)
                 customers_dict["cust_credit_limit"].append(cust_credit)
                 customers_dict["cust_email"].append(custemail)
+                customers_dict["etlpro_id"].append(etlpro_id)
         if customers_dict["cust_id"]:
-            ses_db_stg.connect().execute("TRUNCATE TABLE customers_ext")
-            df_customers_ext=pd.DataFrame(customers_dict)
-            df_customers_ext.to_sql('customers_ext', ses_db_stg, if_exists='append', index=False)
+            df_customers_tra=pd.DataFrame(customers_dict)
+            df_customers_tra.to_sql('customers_tra',  ses_db_stg, if_exists='append', index=False)
+            ses_db_stg.dispose()
 
 
+            
     except:
          traceback.print_exc()
     finally:

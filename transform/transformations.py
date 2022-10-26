@@ -12,5 +12,7 @@ def obt_gender(gen):
     else:
         return 'NO DEFINIDO'
 
-def obt_date(date_string):
-    return datetime.strptime(date_string,'%d-%b-%y')
+def obt_date(date_str):
+    date_string = date_str
+    date =  datetime.strptime(date_string,'%d-%b-%y')
+    return(date)

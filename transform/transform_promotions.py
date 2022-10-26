@@ -32,7 +32,7 @@ def tra_promotions(etlpro_id):
             "etlpro_id":[]
         }
         #Reading the ext table 
-        promotions_ext=pd.read_sql("SELECT PROMO_ID, PROMO_NAME, PROMO_COST, PROMO_BEGIN_DATE, PROMO_END_DATE FROM promotions_ext", ses_db_stg)
+        promotions_ext=pd.read_sql("SELECT PROMO_ID,PROMO_NAME,PROMO_COST,PROMO_BEGIN_DATE,PROMO_END_DATE FROM promotions_ext", ses_db_stg)
         
         #Processing the rows
         if not promotions_ext.empty:

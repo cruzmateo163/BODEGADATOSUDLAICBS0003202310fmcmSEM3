@@ -1,4 +1,3 @@
-
 from transform.transform_channels import  tra_channels
 from util.db_connection import Db_Connection
 from extract.extract_channels import ext_channels
@@ -17,9 +16,9 @@ from util.transform import ex_tra
 try:
     etl_process = insert_ETLSync()
 
-    ext_channels()
-    ext_countries()
-    ext_promotions()
+    #ext_channels()
+    #ext_countries()
+    #ext_promotions()
 
 
     ex_tra(etl_process)
