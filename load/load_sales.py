@@ -5,7 +5,7 @@ import traceback
 from datetime import datetime
 
 
-def load_channels(etlpro_id):
+def load_sales(etlpro_id):
     try:
         #Variables
         type = 'mysql'
@@ -42,29 +42,35 @@ def load_channels(etlpro_id):
             
       
          #DICTIONARY FOR VALUES OF DIM_CHANNELS
-        dim_channel_dict = {
+        dim_sales_dict = {
+            "prod_id":[],
+            "cust_id":[],
+            "time_id":[],
             "channel_id":[],
-            "channel_desc":[],
-            "channel_class":[],
-            "channel_class_id":[]
+            "promo_id":[],
+            "quantity_sold":[],
+            "amount_sold":[]
             #"etlpro_id":[]
         }
         #Reading the ext table 
-        channel_dim=pd.read_sql("SELECT CHANNEL_ID, CHANNEL_DESC, CHANNEL_CLASS, CHANNEL_CLASS_ID FROM channels_tra " , ses_db_stg)
+        sales_dim=pd.read_sql("SELECT PROD_ID,CUST_ID,TIME_ID,CHANNEL_ID,PROMO_ID,QUANTITY_SOLD,AMOUNT_SOLD FROM sales_tra " , ses_db_stg)
         
         #Processing the rows
-        if not channel_dim.empty:
-            for id, des, cla, cla_id \
-                in zip(channel_dim['CHANNEL_ID'], channel_dim['CHANNEL_DESC'],
-                channel_dim['CHANNEL_CLASS'], channel_dim['CHANNEL_CLASS_ID']):
-                dim_channel_dict['channel_id'].append(id)
-                dim_channel_dict["channel_desc"].append(des)
-                dim_channel_dict["channel_class"].append(cla)
-                dim_channel_dict["channel_class_id"].append(cla_id)
-                #dim_channel_dict["etlpro_id"].append(etlpro_id)
-        if dim_channel_dict["channel_id"]:
-            df_channels_dim=pd.DataFrame(dim_channel_dict)
-            df_channels_dim.to_sql('dim_channels', ses_db_sor, if_exists='append', index=False)
+        if not sales_dim.empty:
+            for prodid, custid, timeid, channelid, promoid, quantityid, amountid \
+               in zip(sales_dim['PROD_ID'], sales_dim['CUST_ID'],
+                sales_dim['TIME_ID'], sales_dim['CHANNEL_ID'],sales_dim['PROMO_ID'], sales_dim['QUANTITY_SOLD'],sales_dim['AMOUNT_SOLD']):
+                dim_sales_dict['prod_id'].append(prodid)
+                dim_sales_dict["cust_id"].append(custid)
+                dim_sales_dict["time_id"].append(timeid)
+                dim_sales_dict["channel_id"].append(channelid)
+                dim_sales_dict["promo_id"].append(promoid)
+                dim_sales_dict["quantity_sold"].append(quantityid)
+                dim_sales_dict["amount_sold"].append(amountid)
+                #dim_sales_dict["etlpro_id"].append(etlpro_id)
+        if dim_sales_dict["prod_id"]:
+            df_sales_dim=pd.DataFrame(dim_sales_dict)
+            df_sales_dim.to_sql('dim_sales', ses_db_sor, if_exists='append', index=False)
             ses_db_stg.dispose()
 
 
@@ -73,8 +79,3 @@ def load_channels(etlpro_id):
          traceback.print_exc()
     finally:
         pass
-
-
-
-
-

@@ -5,7 +5,7 @@ import traceback
 from datetime import datetime
 
 
-def load_channels(etlpro_id):
+def load_countries(etlpro_id):
     try:
         #Variables
         type = 'mysql'
@@ -42,29 +42,29 @@ def load_channels(etlpro_id):
             
       
          #DICTIONARY FOR VALUES OF DIM_CHANNELS
-        dim_channel_dict = {
-            "channel_id":[],
-            "channel_desc":[],
-            "channel_class":[],
-            "channel_class_id":[]
+        dim_countries_dict = {
+            "country_id":[],
+            "country_name":[],
+            "country_region":[],
+            "country_region_id":[],
             #"etlpro_id":[]
         }
         #Reading the ext table 
-        channel_dim=pd.read_sql("SELECT CHANNEL_ID, CHANNEL_DESC, CHANNEL_CLASS, CHANNEL_CLASS_ID FROM channels_tra " , ses_db_stg)
+        countries_dim=pd.read_sql("SELECT COUNTRY_ID, COUNTRY_NAME, COUNTRY_REGION,COUNTRY_REGION_ID FROM countries_tra " , ses_db_stg)
         
         #Processing the rows
-        if not channel_dim.empty:
-            for id, des, cla, cla_id \
-                in zip(channel_dim['CHANNEL_ID'], channel_dim['CHANNEL_DESC'],
-                channel_dim['CHANNEL_CLASS'], channel_dim['CHANNEL_CLASS_ID']):
-                dim_channel_dict['channel_id'].append(id)
-                dim_channel_dict["channel_desc"].append(des)
-                dim_channel_dict["channel_class"].append(cla)
-                dim_channel_dict["channel_class_id"].append(cla_id)
-                #dim_channel_dict["etlpro_id"].append(etlpro_id)
-        if dim_channel_dict["channel_id"]:
-            df_channels_dim=pd.DataFrame(dim_channel_dict)
-            df_channels_dim.to_sql('dim_channels', ses_db_sor, if_exists='append', index=False)
+        if not countries_dim.empty:
+            for countryid, countryname, countryregion, countryregionid \
+                in zip(countries_dim['COUNTRY_ID'], countries_dim['COUNTRY_NAME'],
+                countries_dim['COUNTRY_REGION'], countries_dim['COUNTRY_REGION_ID']):
+                dim_countries_dict['country_id'].append(countryid)
+                dim_countries_dict["country_name"].append(countryname)
+                dim_countries_dict["country_region"].append(countryregion)
+                dim_countries_dict["country_region_id"].append(countryregionid)
+                #dim_countries_dict["etlpro_id"].append(etlpro_id)
+        if dim_countries_dict["country_id"]:
+            df_countries_dim=pd.DataFrame(dim_countries_dict)
+            df_countries_dim.to_sql('dim_countries', ses_db_sor, if_exists='append', index=False)
             ses_db_stg.dispose()
 
 
@@ -73,8 +73,3 @@ def load_channels(etlpro_id):
          traceback.print_exc()
     finally:
         pass
-
-
-
-
-

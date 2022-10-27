@@ -5,7 +5,8 @@ import traceback
 from datetime import datetime
 
 
-def load_channels(etlpro_id):
+
+def load_promotions(etlpro_id):
     try:
         #Variables
         type = 'mysql'
@@ -42,29 +43,31 @@ def load_channels(etlpro_id):
             
       
          #DICTIONARY FOR VALUES OF DIM_CHANNELS
-        dim_channel_dict = {
-            "channel_id":[],
-            "channel_desc":[],
-            "channel_class":[],
-            "channel_class_id":[]
+        dim_promotions_dict = {
+            "promo_id":[],
+            "promo_name":[],
+            "promo_cost":[],
+            "promo_begin_date":[],
+            "promo_end_date":[]
             #"etlpro_id":[]
         }
         #Reading the ext table 
-        channel_dim=pd.read_sql("SELECT CHANNEL_ID, CHANNEL_DESC, CHANNEL_CLASS, CHANNEL_CLASS_ID FROM channels_tra " , ses_db_stg)
+        promotions_dim=pd.read_sql("SELECT PROMO_ID,PROMO_NAME,PROMO_COST,PROMO_BEGIN_DATE,PROMO_END_DATE FROM promotions_tra " , ses_db_stg)
         
         #Processing the rows
-        if not channel_dim.empty:
-            for id, des, cla, cla_id \
-                in zip(channel_dim['CHANNEL_ID'], channel_dim['CHANNEL_DESC'],
-                channel_dim['CHANNEL_CLASS'], channel_dim['CHANNEL_CLASS_ID']):
-                dim_channel_dict['channel_id'].append(id)
-                dim_channel_dict["channel_desc"].append(des)
-                dim_channel_dict["channel_class"].append(cla)
-                dim_channel_dict["channel_class_id"].append(cla_id)
-                #dim_channel_dict["etlpro_id"].append(etlpro_id)
-        if dim_channel_dict["channel_id"]:
-            df_channels_dim=pd.DataFrame(dim_channel_dict)
-            df_channels_dim.to_sql('dim_channels', ses_db_sor, if_exists='append', index=False)
+        if not promotions_dim.empty:
+            for prom_id, prom_name, prom_cost, prom_begindate, prom_enddate\
+                in zip(promotions_dim['PROMO_ID'], promotions_dim['PROMO_NAME'],promotions_dim['PROMO_COST'], 
+                promotions_dim['PROMO_BEGIN_DATE'],promotions_dim['PROMO_END_DATE']):
+                dim_promotions_dict['promo_id'].append(prom_id)
+                dim_promotions_dict["promo_name"].append(prom_name)
+                dim_promotions_dict["promo_cost"].append(prom_cost)
+                dim_promotions_dict["promo_begin_date"].append(prom_begindate)
+                dim_promotions_dict["promo_end_date"].append(prom_enddate)
+                #dim_promotions_dict["etlpro_id"].append(etlpro_id)
+        if dim_promotions_dict["promo_id"]:
+            df_promotions_dim=pd.DataFrame(dim_promotions_dict)
+            df_promotions_dim.to_sql('dim_promotions', ses_db_sor, if_exists='append', index=False)
             ses_db_stg.dispose()
 
 
@@ -73,8 +76,3 @@ def load_channels(etlpro_id):
          traceback.print_exc()
     finally:
         pass
-
-
-
-
-
