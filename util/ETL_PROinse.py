@@ -4,7 +4,7 @@ import pandas as pd
 import traceback
 from datetime import datetime
 
-def insert_ETLSync():
+def ETLinsert():
     try:
         type = 'mysql'
         host = 'localhost'

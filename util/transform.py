@@ -7,7 +7,7 @@ from transform.transform_promotions import tra_promotions
 from transform.transform_sales import tra_sales
 from transform.transform_times import tra_times
 
-def ex_tra(etl_process):
+def transf_pro(etl_process):
     tra_channels(etl_process)
     tra_countries(etl_process)
     tra_promotions(etl_process)
